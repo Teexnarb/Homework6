@@ -4,22 +4,20 @@ import java.util.Objects;
 
 public class Employee {
 
-    private final String firstName;
-    private final String lastName;
-    private final String passwordNumber;
-    private final Integer yearBirth;
-    private final Integer wage;
-    private final Integer departmentNumber;
+    private String firstName;
+    private String lastName;
+    private int salary;
 
-    public Employee(String firstName, String lastName, String passwordNumber, Integer yearBirth, Integer wage, Integer departmentNumber) {
+    private int department;
+
+    public Employee(String firstName, String lastName, int salary, int department) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.passwordNumber = passwordNumber;
-        this.yearBirth = yearBirth;
-        this.wage = wage;
-        this.departmentNumber = departmentNumber;
+        this.salary = salary;
+        this.department = department;
     }
-
+    public Employee() {
+    }
     public String getFirstName() {
         return firstName;
     }
@@ -28,33 +26,33 @@ public class Employee {
         return lastName;
     }
 
-    public String getPasswordNumber() {
-        return passwordNumber;
+    public int getSalary() {
+        return salary;
     }
 
-    public Integer getYearBirth() {
-        return yearBirth;
+    public int getDepartment() {
+        return department;
     }
 
-    public Integer getWage() {
-        return wage;
+    public void setSalary(int salary) {
+        this.salary = salary;
     }
 
-    public Integer getDepartmentNumber() {
-        return departmentNumber;
+    public void setDepartment(int department) {
+        this.department = department;
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof Employee)) return false;
-        Employee employee = (Employee) object;
-        return Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName) && Objects.equals(passwordNumber, employee.passwordNumber) && Objects.equals(yearBirth, employee.yearBirth) && Objects.equals(wage, employee.wage) && Objects.equals(departmentNumber, employee.departmentNumber);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return salary == employee.salary && department == employee.department && Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, passwordNumber, yearBirth, wage, departmentNumber);
+        return Objects.hash(firstName, lastName, salary, department);
     }
 
     @Override
@@ -62,10 +60,8 @@ public class Employee {
         return "Employee{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", passwordNumber='" + passwordNumber + '\'' +
-                ", yearBirth=" + yearBirth +
-                ", wage=" + wage +
-                ", departmentNumber=" + departmentNumber +
+                ", salary=" + salary +
+                ", department=" + department +
                 '}';
     }
 }

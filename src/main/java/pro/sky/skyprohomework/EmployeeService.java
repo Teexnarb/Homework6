@@ -1,25 +1,46 @@
 package pro.sky.skyprohomework;
 
-import java.util.Collection;
-import java.util.Map;
+import org.springframework.stereotype.Service;
+import java.util.*;
 
-public interface EmployeeService {
+@Service
+public class EmployeeService {
+    private static final int MAX_Employees = 10;
 
-//    Employee add(String firstName, String lastName, String passwordNumber, Integer yearBirth, Employee employee);
+    public final Map<String, Employee> employees=new HashMap<>();
+    public void add(String firstName, String lastName, int salary, int department) {
+        if (employees.size() == MAX_Employees) {
+            throw new EmployeeStorageIsFullException("");
+        }
+        String key = buildKey(firstName, lastName);
+        if (employees.containsKey(key)) {
+            throw new EmployeeStorageIsFullException("");
+        }
+        employees.put(key, new Employee(firstName, lastName, salary, department));
+    }
 
-//    Employee add(String firstName, String lastName, String passwordNumber, Integer yearBirth);
+    public Employee remove(String firstName, String lastName) {
+        String key = buildKey(firstName, lastName);
+        Employee employee = employees.remove(key);
+        if (employee == null) {
+            throw new EmployeeNotFoundException();
+        }
+        return employee;
+    }
+    public Employee find(String firstName, String lastName) {
+        String key = buildKey(firstName, lastName);
+        Employee employee = employees.remove(key);
+        if (employee == null) {
+            throw new EmployeeNotFoundException();
+        }
+        return employee;
+    }
 
-    Map add(String firstName, String lastName, String passwordNumber, Integer yearBirth, Employee employee);
+    private String buildKey(String name, String surname) {
+        return name + surname;
+    }
 
-    Employee remove(String firstName, String lastName, String passwordNumber);
-
-    Employee find(String firstName, String lastName, String passwordNumber);
-
-    Map<String, Employee> allEmployeeInfo();
-
-    Employee maxWageDepartment(Integer departmentNumber);
-
-    Employee minWageDepartment(Integer departmentNumber);
-
-    String allEmployeeGroup(Integer department);
+    public Collection<Employee> findAll() {
+       return Collections.unmodifiableCollection(employees.values());
+    }
 }
