@@ -1,7 +1,10 @@
 package pro.sky.skyprohomework;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.isAlpha;
 
 @Service
 public class EmployeeService {
@@ -9,6 +12,7 @@ public class EmployeeService {
 
     public final Map<String, Employee> employees=new HashMap<>();
     public void add(String firstName, String lastName, int salary, int department) {
+        validateInput(firstName,lastName);
         if (employees.size() == MAX_Employees) {
             throw new EmployeeStorageIsFullException("");
         }
@@ -20,6 +24,7 @@ public class EmployeeService {
     }
 
     public Employee remove(String firstName, String lastName) {
+        validateInput(firstName,lastName);
         String key = buildKey(firstName, lastName);
         Employee employee = employees.remove(key);
         if (employee == null) {
@@ -28,6 +33,7 @@ public class EmployeeService {
         return employee;
     }
     public Employee find(String firstName, String lastName) {
+        validateInput(firstName,lastName);
         String key = buildKey(firstName, lastName);
         Employee employee = employees.remove(key);
         if (employee == null) {
@@ -42,5 +48,11 @@ public class EmployeeService {
 
     public Collection<Employee> findAll() {
        return Collections.unmodifiableCollection(employees.values());
+    }
+
+    private void validateInput(String firstName, String lastName)  {
+        if (!(isAlpha(firstName) && isAlpha(lastName))) {
+            throw new InvalidInputException();
+        }
     }
 }
