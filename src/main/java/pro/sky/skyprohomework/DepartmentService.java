@@ -2,83 +2,40 @@ package pro.sky.skyprohomework;
 
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class DepartmentService {
-    private EmployeeService employeeService;
-    public void indexSalariesForDepartment(double index, int department) {
-        employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .forEach(employee -> employee.setSalary((int) (employee.getSalary() + employee.getSalary() * index / 100)));
-        for (Employee employee : employeeService.findAll()) {
-            if (employee.getDepartment() == department) {
-                employee.setSalary((int) (employee.getSalary()+employee.getSalary()*index/100));
-            }
-        }
+
+    private final EmployeeService employeeService;
+
+    public DepartmentService(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
-    public double averageSalaryForDepartment(int department) {
-        return employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .mapToInt(Employee::getSalary)
-                .average()
-                .orElse(0D);
+    public Employee getEmployeeWithMaxSalary(Integer departmentId) {
+        return employeeService.getAll().stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .max(Comparator.comparing(Employee::getSalary))
+                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с максимальной зарплатой не найден"));
     }
 
-    public Employee findEmployeeWithMinSalaryForDepartment(int department) {
-        return employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .min(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(EmployeeNotFoundException::new);
-    }
-    public Employee findEmployeeWithMaxSalaryForDepartment(int department) {
-        return employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .max(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(EmployeeNotFoundException::new);
+    public Employee getEmployeeWithMinSalary(Integer departmentId) {
+        return employeeService.getAll().stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .min(Comparator.comparing(Employee::getSalary))
+                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с минимальной зарплатой не найден"));
     }
 
-    public double totalSalaryForDepartment(int department) {
-        return employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .mapToInt(Employee::getSalary)
-                .sum();
-    }
-
-    public void printAllEmployeeFromDepartment(int department) {
-        employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .forEach(employee -> System.out.printf(
-                        "ФИ: %s %s, ЗП: %d%n",
-                        employee.getLastName(),
-                        employee.getFirstName(),
-                        employee.getDepartment()));
-    }
-
-    public Employee findEmployeeWithMaxSalaryFromDepartment(int department) {
-        return employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .max(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(EmployeeNotFoundException::new);
-    }
-
-    public Employee findEmployeeWithMinSalaryFromDepartment(int department) {
-        return employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .min(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(EmployeeNotFoundException::new);
-    }
-
-    public Collection<Employee> findEmployeesFromDepartment(int department) {
-        return employeeService.findAll().stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .collect(Collectors.toList());
-    }
-
-    public Map<Integer, List<Employee>> findEmployees(int department) {
-        return employeeService.findAll().stream()
-                .collect(Collectors.groupingBy(Employee::getDepartment));
+    public Map<Integer, List<Employee>> getEmployeesByDepartment(Integer departmentId) {
+        return employeeService.getAll().stream()
+                .filter(e -> departmentId == null || e.getDepartmentId() == departmentId)
+                .collect(groupingBy(Employee::getDepartmentId, toList()));
     }
 }
+

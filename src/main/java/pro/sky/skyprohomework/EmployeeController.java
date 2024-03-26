@@ -1,37 +1,42 @@
 package pro.sky.skyprohomework;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
-    private EmployeeService employeeService;
+
+    @ExceptionHandler({HttpStatusCodeException.class})
+    public String handleException(HttpStatusCodeException e) {
+        return "Code: " + e.getStatusCode() + ". Error: " + e.getMessage();
+    }
+
+    private final EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
     @GetMapping("/add")
-    public void add(@RequestParam String firstName, @RequestParam String lastName, @RequestParam int salary, @RequestParam int department) {
-        employeeService.add(firstName,lastName, salary, department);
+    public Employee add(@RequestParam String firstName, @RequestParam String lastName, @RequestParam double salary, @RequestParam Integer departmentId) {
+        return employeeService.add(firstName, lastName, salary, departmentId);
     }
-    @GetMapping("/remove")
-    public Employee remove(@RequestParam String firstName, @RequestParam String lastName) {
-        return employeeService.remove(firstName, lastName);
-    }
+
     @GetMapping("/find")
-    public Employee find(@RequestParam String firstName, @RequestParam String lastName) {
-        return employeeService.find(firstName, lastName);
+    public Employee find(@RequestParam String firstName, @RequestParam String lastName, @RequestParam double salary, @RequestParam Integer departmentId) {
+        return employeeService.find(firstName, lastName, salary, departmentId);
     }
+
+    @GetMapping("/remove")
+    public Employee remove(@RequestParam String firstName, @RequestParam String lastName, @RequestParam double salary, @RequestParam Integer departmentId) {
+        return employeeService.remove(firstName, lastName, salary, departmentId);
+    }
+
     @GetMapping
-    public Collection<Employee> findAll() {
-        return employeeService.findAll();
+    public List<Employee> getAll() {
+        return employeeService.getAll();
     }
 }
