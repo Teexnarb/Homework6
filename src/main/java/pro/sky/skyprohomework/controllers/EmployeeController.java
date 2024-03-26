@@ -1,9 +1,12 @@
-package pro.sky.skyprohomework;
+package pro.sky.skyprohomework.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpStatusCodeException;
+import pro.sky.skyprohomework.Employee;
+import pro.sky.skyprohomework.service.EmployeeService;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/employee")

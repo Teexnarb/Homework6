@@ -7,10 +7,7 @@ public class Tasks {
     public static void main(String[] args) {
 
         List<Integer> nums = new ArrayList<>(List.of(1, 1, 2, 3, 4, 4, 5, 5, 6, 7));
-//        task1(nums);
-//        task2(nums);
         List<String> strings = new ArrayList<>(List.of("hello", "world", "java", "hello", "java", "jvm", "java"));
-//        task3(strings);
         task4(strings);
     }
 

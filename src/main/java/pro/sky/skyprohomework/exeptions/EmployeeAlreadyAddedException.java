@@ -1,4 +1,4 @@
-package pro.sky.skyprohomework;
+package pro.sky.skyprohomework.exeptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;

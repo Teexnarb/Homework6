@@ -2,6 +2,8 @@ package pro.sky.skyprohomework;
 
 import java.util.Objects;
 
+import java.util.Objects;
+
 public class Employee {
 
     private final String firstName;

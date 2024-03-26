@@ -1,7 +1,12 @@
-package pro.sky.skyprohomework;
+package pro.sky.skyprohomework.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
+import pro.sky.skyprohomework.Employee;
+import pro.sky.skyprohomework.exeptions.EmployeeAlreadyAddedException;
+import pro.sky.skyprohomework.exeptions.EmployeeNotFoundException;
+import pro.sky.skyprohomework.exeptions.EmployeeStorageIsFullException;
+import pro.sky.skyprohomework.exeptions.ValidationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +19,8 @@ public class EmployeeService {
     private final static int MAX_SIZE = 2;
 
     public Employee add(String firstName, String lastName, double salary, int departmentId) {
+        validateCapitalize(firstName, lastName);
+        validateIsAlpha(firstName, lastName);
 
         if (employees.size() >= MAX_SIZE) {
             throw new EmployeeStorageIsFullException("Массив сотрудников переполнен");
@@ -30,6 +37,9 @@ public class EmployeeService {
     }
 
     public Employee find(String firstName, String lastName, double salary, int departmentId) {
+        validateCapitalize(firstName, lastName);
+        validateIsAlpha(firstName, lastName);
+
         Employee employeeForFound = new Employee(firstName, lastName, salary, departmentId);
         for (Employee e : employees) {
             if (e.equals(employeeForFound)) {
@@ -41,6 +51,9 @@ public class EmployeeService {
     }
 
     public Employee remove(String firstName, String lastName, double salary, int departmentId) {
+        validateCapitalize(firstName, lastName);
+        validateIsAlpha(firstName, lastName);
+
         Employee employeeForRemove = new Employee(firstName, lastName, salary, departmentId);
 
         boolean removeResult = employees.remove(employeeForRemove);
@@ -53,5 +66,27 @@ public class EmployeeService {
 
     public List<Employee> getAll() {
         return employees;
+    }
+
+    private void validateCapitalize(String firstName, String lastName) {
+        String capitalizeFirstName = StringUtils.capitalize(firstName);
+        if (!firstName.equals(capitalizeFirstName)) {
+            throw new ValidationException("Имя сотрудника начинается не с большой буквы");
+        }
+
+        String capitalizeLastName = StringUtils.capitalize(lastName);
+        if (!lastName.equals(capitalizeLastName)) {
+            throw new ValidationException("Фамилия сотрудника начинается не с большой буквы");
+        }
+    }
+
+    private void validateIsAlpha(String firstName, String lastName) {
+        if (!StringUtils.isAlpha(firstName)) {
+            throw new ValidationException("Имя содержит запрещенные символы");
+        }
+
+        if (!StringUtils.isAlpha(lastName)) {
+            throw new ValidationException("Фамилия содержит запрещенные символы");
+        }
     }
 }
